@@ -1,0 +1,12 @@
+Access Server Web UIs are available here:
+Admin  UI: https://192.168.181.11:943/admin
+To login please use the "openvpn" account with "FdCUtLubfnh8" password.
+
+
+https://192.168.181.11:943/
+
+CLIENT1_HN
+Passwords: Y>%8gAgEGK?aKmV
+
+CLIENT2_HN
+Passwords: Z<%2gAgEGK?aKmN
