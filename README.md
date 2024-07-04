@@ -22,7 +22,7 @@ To start the FL experiment, perform the following steps:
    $ python client.py --settings_path "Path to the settings JSON"
 3. Run the `server.py` script on the server computer within the virtual environment 
    ```sh
-   $ python server.py --settings_path "Path to the settings JSON" --FL_plan_path "Path to the FL plan JSON"
+   python server.py --settings_path "Path to the settings JSON" --FL_plan_path "Path to the FL plan JSON"
 
 
 That's it!
