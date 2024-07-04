@@ -37,10 +37,10 @@ def createSSHClient(server, port, user, password):
     """
     Function source: https://stackoverflow.com/questions/250283/how-to-scp-in-python
     """
-    client = paramiko.SSHClient()
-    client.load_system_host_keys()
-    client.set_missing_host_key_policy(paramiko.AutoAddPolicy())
-    client.connect(server, port, user, password)
+    client = paramiko.SSHClient()                                   # Tạo đối tượng SSHClient
+    client.load_system_host_keys()                                  # Tải khóa máy chủ mặc định
+    client.set_missing_host_key_policy(paramiko.AutoAddPolicy())    # Tự động thêm khóa máy chủ nếu chưa có
+    client.connect(server, port, user, password)                    # Kết nối đến máy chủ từ xa
     return client
 
 
@@ -52,12 +52,14 @@ def send_file(remote_ip_address, username, password, file_path):
     :param password: str, password of remote
     :param file_path: str, path to local file to share
     """
-    # Create ssh and scp client
+    SCPClient()
+    # Create ssh and scp client 
     # Source to fix issue "scp.SCPException: Timeout waiting for scp response":
     # ==> https://github.com/ktbyers/netmiko/issues/1254
     ssh = createSSHClient(remote_ip_address, 22, username, password)
     scp = SCPClient(ssh.get_transport(), socket_timeout=60)
 
+    
     # Share model with client
     scp.put(file_path, remote_path=file_path)
 
@@ -80,16 +82,16 @@ def wait_for_file(file_path):
 def weighted_avg_local_models(state_dicts_dict, size_dict):
     """ Get weighted average of local models
 
-    :param state_dicts_dict: dict, key: client ip address, value: local state dict
+    :param state_dicts_dict: dict, key: client ip address, value: 
     :param size_dict: dict, key: client ip address, value: dataset size
     :return: weighted average state dict of local state dicts
     """
 
     n_sum = sum(size_dict.values())
-    clients = list(state_dicts_dict.keys())
-    state_dict_keys = state_dicts_dict.get(clients[0]).keys()
+    clients = list(state_dicts_dict.keys())                     # Lấy danh sách các máy khách từ state_dicts_dict.
+    state_dict_keys = state_dicts_dict.get(clients[0]).keys()   # Lấy danh sách các khóa của state_dict từ máy khách đầu tiên.
 
-    state_dict_avg = OrderedDict()
+    state_dict_avg = OrderedDict()                              # Khởi tạo đối tượng OrderedDict để lưu trữ trung bình có trọng số của các state_dict
     for i, client in enumerate(clients):
         local_state_dict = state_dicts_dict.get(client)
         n_client = size_dict.get(client)
@@ -104,6 +106,7 @@ def weighted_avg_local_models(state_dicts_dict, size_dict):
 
 
 def get_n_random_pairs_from_dict(input_dict, n, random_seed=None):
+    # Lây n cặp không trùng lặp từ dict
     """ Sample n random pairs from a dict without replacement
 
     :param input_dict: dict

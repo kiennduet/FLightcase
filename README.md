@@ -19,6 +19,8 @@ To start the FL experiment, perform the following steps:
 1. Make sure that all computers are present in the same virtual network via VPN
 3. Run the `client.py` script on each client computer within the virtual environment
 4. Run the `server.py` script on the server computer within the virtual environment 
+   $ python server.py --settings_path "Path to the settings JSON" --FL_plan_path "Path to the FL plan JSON"
+
 
 That's it!
 
