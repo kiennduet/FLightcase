@@ -37,10 +37,10 @@ def createSSHClient(server, port, user, password):
     """
     Function source: https://stackoverflow.com/questions/250283/how-to-scp-in-python
     """
-    client = paramiko.SSHClient()                                   # Tạo đối tượng SSHClient
-    client.load_system_host_keys()                                  # Tải khóa máy chủ mặc định
-    client.set_missing_host_key_policy(paramiko.AutoAddPolicy())    # Tự động thêm khóa máy chủ nếu chưa có
-    client.connect(server, port, user, password)                    # Kết nối đến máy chủ từ xa
+    client = paramiko.SSHClient()                                   # Create an SSHClient object
+    client.load_system_host_keys()                                  # Load default host keys
+    client.set_missing_host_key_policy(paramiko.AutoAddPolicy())    # Automatically add the host key if it's missing
+    client.connect(server, port, user, password)                    # Connect to the remote server
     return client
 
 
@@ -59,7 +59,6 @@ def send_file(remote_ip_address, username, password, file_path):
     ssh = createSSHClient(remote_ip_address, 22, username, password)
     scp = SCPClient(ssh.get_transport(), socket_timeout=60)
 
-    
     # Share model with client
     scp.put(file_path, remote_path=file_path)
 
@@ -88,10 +87,9 @@ def weighted_avg_local_models(state_dicts_dict, size_dict):
     """
 
     n_sum = sum(size_dict.values())
-    clients = list(state_dicts_dict.keys())                     # Lấy danh sách các máy khách từ state_dicts_dict.
-    state_dict_keys = state_dicts_dict.get(clients[0]).keys()   # Lấy danh sách các khóa của state_dict từ máy khách đầu tiên.
-
-    state_dict_avg = OrderedDict()                              # Khởi tạo đối tượng OrderedDict để lưu trữ trung bình có trọng số của các state_dict
+    clients = list(state_dicts_dict.keys())                     # Get the list of clients from state_dicts_dict.
+    state_dict_keys = state_dicts_dict.get(clients[0]).keys()   # Get the list of state_dict keys from the first client.
+    state_dict_avg = OrderedDict()                              # Initialize an OrderedDict object to store the weighted average of the state_dicts.
     for i, client in enumerate(clients):
         local_state_dict = state_dicts_dict.get(client)
         n_client = size_dict.get(client)
@@ -106,7 +104,6 @@ def weighted_avg_local_models(state_dicts_dict, size_dict):
 
 
 def get_n_random_pairs_from_dict(input_dict, n, random_seed=None):
-    # Lây n cặp không trùng lặp từ dict
     """ Sample n random pairs from a dict without replacement
 
     :param input_dict: dict
