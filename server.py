@@ -247,7 +247,7 @@ if __name__ == "__main__":
     parameters_info_txt = f'Total number of parameters: {sum(total_parameters_dict.values())}\n' \
                           f'Number of trainable parameters: {sum(trainable_parameters_dict.values())}\n' \
                           f'More info trainable parameters: {trainable_parameters_dict}'
-    # print(parameters_info_txt)                                                          # Print
+    print(parameters_info_txt)                                                          # Print
     with open(os.path.join(workspace_path, 'parameters_info.txt'), 'w') as txt_file:    # Save
         txt_file.write(parameters_info_txt)
 
