@@ -201,7 +201,7 @@ if __name__ == "__main__":
         client_ip_address = credentials.get('ip_address')
         send_file(client_ip_address, credentials.get('username'), credentials.get('password'),
                   os.path.join(workspace_path, 'FL_plan.json'))
-        print(f'    ==> Sended to {client_name} ...')
+        print(f'    ==> Sent to {client_name} ...')
 
     # Extract FL plan
     with open(FL_plan_path, 'r') as json_file:
