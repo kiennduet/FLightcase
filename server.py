@@ -227,18 +227,19 @@ if __name__ == "__main__":
 
 
     # Load initial network and save
-
-    # net_architecture = DenseNet(3, 1, 1)
-    # global_net = get_weights(net_architecture, initial_state_dict_path)
-    # model_path = os.path.join(workspace_path, 'initial_model.pt')
-    # torch.save(global_net.state_dict(), model_path)
-#_______________________________________________________________________________
     net_architecture = DenseNet(3, 1, 1)
-    global_net = get_weights(net_architecture, initial_state_dict_path)
-    # global_net = net_architecture
-    model_path = os.path.join(workspace_path, 'initial_model.pt')
-    torch.save(global_net.state_dict(), model_path)
-# _______________________________________________________________________________    
+    if initial_state_dict_path is None:
+        print('\nWarning: Do not have initial model !!!\n==> Default model has been used\n\n')
+        global_net = net_architecture
+        model_path = os.path.join(workspace_path, 'initial_model.pt')
+        global_net = get_weights(net_architecture, model_path)
+        torch.save(global_net.state_dict(), model_path)
+
+    else:
+        print('\n==> Initial model has been used\n\n')    
+        global_net = get_weights(net_architecture, initial_state_dict_path)
+        model_path = os.path.join(workspace_path, 'initial_model.pt')
+        torch.save(global_net.state_dict(), model_path)
 
 
     # Print model information: total and trainable parameters
