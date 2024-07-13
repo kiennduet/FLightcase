@@ -226,7 +226,6 @@ if __name__ == "__main__":
             client_dataset_size_dict.update({client_name: n_client})
             print(f'     ==> {client_name}: n = {n_client}')
 
-
     # Load initial network and save
     net_architecture = DenseNet(3, 1, 1)
     if initial_state_dict_path is None:
