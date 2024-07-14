@@ -37,6 +37,10 @@ def createSSHClient(server, port, user, password):
     """
     Function source: https://stackoverflow.com/questions/250283/how-to-scp-in-python
     """
+    client = paramiko.SSHClient()
+    client.load_system_host_keys()
+    client.set_missing_host_key_policy(paramiko.AutoAddPolicy())
+    client.connect(server, port, user, password)
     client = paramiko.SSHClient()                                   # Create an SSHClient object
     client.load_system_host_keys()                                  # Load default host keys
     client.set_missing_host_key_policy(paramiko.AutoAddPolicy())    # Automatically add the host key if it's missing
@@ -52,8 +56,7 @@ def send_file(remote_ip_address, username, password, file_path):
     :param password: str, password of remote
     :param file_path: str, path to local file to share
     """
-    SCPClient()
-    # Create ssh and scp client 
+    # Create ssh and scp client
     # Source to fix issue "scp.SCPException: Timeout waiting for scp response":
     # ==> https://github.com/ktbyers/netmiko/issues/1254
     ssh = createSSHClient(remote_ip_address, 22, username, password)
@@ -81,15 +84,16 @@ def wait_for_file(file_path):
 def weighted_avg_local_models(state_dicts_dict, size_dict):
     """ Get weighted average of local models
 
-    :param state_dicts_dict: dict, key: client ip address, value: 
+    :param state_dicts_dict: dict, key: client ip address, value: local state dict
     :param size_dict: dict, key: client ip address, value: dataset size
     :return: weighted average state dict of local state dicts
     """
 
     n_sum = sum(size_dict.values())
-    clients = list(state_dicts_dict.keys())                     # Get the list of clients from state_dicts_dict.
-    state_dict_keys = state_dicts_dict.get(clients[0]).keys()   # Get the list of state_dict keys from the first client.
-    state_dict_avg = OrderedDict()                              # Initialize an OrderedDict object to store the weighted average of the state_dicts.
+    clients = list(state_dicts_dict.keys())
+    state_dict_keys = state_dicts_dict.get(clients[0]).keys()
+
+    state_dict_avg = OrderedDict()
     for i, client in enumerate(clients):
         local_state_dict = state_dicts_dict.get(client)
         n_client = size_dict.get(client)
@@ -201,6 +205,7 @@ if __name__ == "__main__":
         client_ip_address = credentials.get('ip_address')
         send_file(client_ip_address, credentials.get('username'), credentials.get('password'),
                   os.path.join(workspace_path, 'FL_plan.json'))
+        print(f'    ==> Sent to {client_name} ...')
 
     # Extract FL plan
     with open(FL_plan_path, 'r') as json_file:
@@ -227,9 +232,19 @@ if __name__ == "__main__":
 
     # Load initial network and save
     net_architecture = DenseNet(3, 1, 1)
-    global_net = get_weights(net_architecture, initial_state_dict_path)
-    model_path = os.path.join(workspace_path, 'initial_model.pt')
-    torch.save(global_net.state_dict(), model_path)
+    if initial_state_dict_path is None:
+        print('\nWarning: Do not have initial model !!!\n==> Default model has been used\n\n')
+        global_net = net_architecture
+        model_path = os.path.join(workspace_path, 'initial_model.pt')
+        global_net = get_weights(net_architecture, model_path)
+        torch.save(global_net.state_dict(), model_path)
+
+    else:
+        print('\n==> Initial model has been used\n\n')    
+        global_net = get_weights(net_architecture, initial_state_dict_path)
+        model_path = os.path.join(workspace_path, 'initial_model.pt')
+        torch.save(global_net.state_dict(), model_path)
+    
 
     # Print model information: total and trainable parameters
     total_parameters_dict, trainable_parameters_dict = get_parameters(global_net, method=tl_method)
