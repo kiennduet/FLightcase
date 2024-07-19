@@ -235,6 +235,10 @@ if __name__ == "__main__":
         global_net = get_weights(net_architecture, model_path)
         torch.save(global_net.state_dict(), model_path)
 
+        # model_path = os.path.join(workspace_path, 'initial_model.pt')
+        # torch.save(net_architecture.state_dict(), model_path)
+        # global_net = get_weights(net_architecture, model_path)
+
     else:
         print('\n==> Initial model has been used\n\n')    
         global_net = get_weights(net_architecture, initial_state_dict_path)
